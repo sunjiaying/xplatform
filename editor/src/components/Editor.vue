@@ -19,6 +19,10 @@
     </div>
     <MonacoEditor class="editor" :options="options" v-model="code" language="javascript" @change="changed" @editorWillMount="editorWillMount" />
     <div class="billtable">
+      <CheckboxGroup v-model="border">
+        <Checkbox label="默认" disabled></Checkbox>
+        <Checkbox label="P00002_xxxx活动"></Checkbox>
+      </CheckboxGroup>
       <table class="t1" border="1" cellspacing="0" cellpadding="0">
         <tbody>
           <tr>
@@ -131,6 +135,7 @@ export default {
   name: "Editor",
   data() {
     return {
+      border: ['默认'],
       options: {
         tabSize: 2,
         lineNumbers: true
