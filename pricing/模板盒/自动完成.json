@@ -1,0 +1,25 @@
+[
+  {
+    "label": "hdzk",
+    "documentation": "这是一个说明",
+    "insertText": "工具.活动折扣(本单, 可参与本活动的商品清单, 不可以参加本活动的商品清单, 1, 1)",
+    "kind": "Function"
+  },
+  {
+    "label": "hj",
+    "documentation": "这是一个说明",
+    "insertText": "var 整单合计结果 = 工具.合计(本单, 可参与本活动的商品清单, 不可以参加本活动的商品清单)",
+    "kind": "Function"
+  },
+  {
+    "label": "rg",
+    "documentation": "这是一个说明",
+    "insertText": [      
+      "if (${1:条件})",
+      "{",
+      "\t$0",
+      "}"
+    ],
+    "kind": "Snippet"
+  }
+]
