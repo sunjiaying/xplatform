@@ -31,12 +31,11 @@ var 打印 = console.log;
       }
       item.活折额1 = parseFloat((item.基折额 * item.返现额前折).toFixed(2));
       item.活折额2 = parseFloat((item.活折额1 - item.返现额).toFixed(2));
+      item.活折额2 = item.活折额2 < 0 ? 0 : item.活折额2;
       item.业务额 = parseFloat((item.活折额2 * item.返现额后折).toFixed(2));
+      item.业务额 = item.业务额 < 0 ? 0 : item.业务额;
       item.结算额 = item.业务额 - item.积分额 - item.优惠券2;
-      // 如果结算额被减出负数了，即进行为0修正
-      if (item.结算额 < 0) {
-        item.结算额 = 0;
-      }
+      item.结算额 = item.结算额 < 0 ? 0 : item.结算额;
     }
   });
 };
@@ -52,12 +51,11 @@ var 打印 = console.log;
       item.返现额后折 = 返现额后折;
       item.活折额1 = parseFloat((item.基折额 * item.返现额前折).toFixed(2));
       item.活折额2 = parseFloat((item.活折额1 - item.返现额).toFixed(2));
+      item.活折额2 = item.活折额2 < 0 ? 0 : item.活折额2;
       item.业务额 = parseFloat((item.活折额2 * item.返现额后折).toFixed(2));
+      item.业务额 = item.业务额 < 0 ? 0 : item.业务额;
       item.结算额 = item.业务额 - item.积分额 - item.优惠券2;
-      // 如果结算额被减出负数了，即进行为0修正
-      if (item.结算额 < 0) {
-        item.结算额 = 0;
-      }
+      item.结算额 = item.结算额 < 0 ? 0 : item.结算额;
     }    
   });
 };
@@ -107,12 +105,11 @@ var 打印 = console.log;
     }
     item.活折额1 = parseFloat((item.基折额 * item.返现额前折).toFixed(2));
     item.活折额2 = parseFloat((item.活折额1 - item.返现额).toFixed(2));
+    item.活折额2 = item.活折额2 < 0 ? 0 : item.活折额2;
     item.业务额 = parseFloat((item.活折额2 * item.返现额后折).toFixed(2));
+    item.业务额 = item.业务额 < 0 ? 0 : item.业务额;
     item.结算额 = item.业务额 - item.积分额 - item.优惠券2;
-    // 如果结算额被减出负数了，即进行为0修正
-    if (item.结算额 < 0) {
-      item.结算额 = 0;
-    }
+    item.结算额 = item.结算额 < 0 ? 0 : item.结算额;
   });
 };
 
