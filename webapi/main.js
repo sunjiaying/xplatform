@@ -109,8 +109,13 @@ app.get('/template', function (req, res) {
 app.post('/calc', function (req, res) {
   req.on('data', function (data) {
     var bill = JSON.parse(data.toString());
-    定价().计算(bill);
-    res.send(bill);
+    try {
+      定价().计算(bill);
+      res.send(bill);
+    } catch(err) {
+      console.log(err);
+      res.send({});
+    }
   });
 });
 
