@@ -1,6 +1,10 @@
 <template>
   <div class="hello">
     <div class="toolbar">
+      <RadioGroup v-model="current" @on-change="changecode">
+        <Radio label="P00001_xxxx活动"></Radio>
+        <Radio label="P00003_xxxx活动"></Radio>
+      </RadioGroup>
       <Button type="success" size="small" @click="save">保存并激活</Button>
       <Button type="primary" size="small" @click="test">测试</Button>
 
@@ -19,9 +23,10 @@
     </div>
     <MonacoEditor class="editor" :options="options" v-model="code" language="javascript" @change="changed" @editorWillMount="editorWillMount" />
     <div class="billtable">
-      <CheckboxGroup v-model="border">
-        <Checkbox label="默认" disabled></Checkbox>
-        <Checkbox label="P00002_xxxx活动"></Checkbox>
+      <CheckboxGroup v-model="pricing" @on-change="test">
+        <Checkbox label="基本定价" disabled></Checkbox>
+        <Checkbox label="P00001_xxxx活动"></Checkbox>
+        <Checkbox label="P00003_xxxx活动"></Checkbox>
       </CheckboxGroup>
       <table class="t1" border="1" cellspacing="0" cellpadding="0">
         <tbody>
@@ -54,6 +59,7 @@
             <th>截止时间</th>
             <th>结算方式</th>
             <th>使用范围</th>
+            <th>使用</th>
           </tr>
           <tr v-for="item in bills[0].优惠券" :key="item.款号">
             <td>{{item.面值}}</td>
@@ -61,6 +67,7 @@
             <td>{{item.截止时间}}</td>
             <td>{{item.结算方式}}</td>
             <td>{{item.使用范围}}</td>
+            <td><Checkbox v-model="item.使用" @on-change="test">使用</Checkbox></td>
           </tr>
         </tbody>
       </table>
@@ -135,7 +142,8 @@ export default {
   name: "Editor",
   data() {
     return {
-      border: ['默认'],
+      current: 'P00001_xxxx活动',
+      pricing: ['基本定价'],
       options: {
         tabSize: 2,
         lineNumbers: true
@@ -221,7 +229,8 @@ export default {
             "结算方式": "先券后折",
             "使用范围": ["A1KT1806M*"],
             "名称": "2019年11月生日券",
-            "规则": "1.仅限购买当季商品 2.此券不退不换 3......."
+            "规则": "1.仅限购买当季商品 2.此券不退不换 3.......",
+            "使用": true
           },
           {
             "券号": "SROKSODKXLST",
@@ -232,7 +241,8 @@ export default {
             "结算方式": "先折后券",
             "使用范围": ["A1KT1807M*"],
             "名称": "2019年11月生日券",
-            "规则": "1.仅限购买当季商品 2.此券不退不换 3......."
+            "规则": "1.仅限购买当季商品 2.此券不退不换 3.......",
+            "使用": true
           }
         ]
       }
@@ -292,6 +302,9 @@ export default {
     changed() {
       this.editSaved = false;
     },
+    changecode() {
+      this.reload();
+    },
     template() {
       this.$api.get('template', { "value": this.templateSelected }, response => {
         if (response.data && response.status && (response.status >= 200 && response.status < 300)) {
@@ -309,7 +322,7 @@ export default {
       });
     },
     reference() {        
-      this.$api.get('template_input', { "value": this.templateSelected }, response => {
+      this.$api.get('template_input', { value: this.templateSelected }, response => {
         if (response.data && response.status && (response.status >= 200 && response.status < 300)) {
           if (response.data === 'error'){
             this.template_inputs = [];            
@@ -323,7 +336,7 @@ export default {
       });      
     },
     reload() {
-      this.$api.get('promotion', null, response => {
+      this.$api.get('promotion', { value: this.current }, response => {
         if (response.data && response.status && (response.status >= 200 && response.status < 300)) {
           this.code = response.data;
           this.editSaved = true;
@@ -331,7 +344,7 @@ export default {
       });
     },
     save() {
-      this.$api.post('save', { code: this.code }, response => {
+      this.$api.post('save', { value: this.current, code: this.code }, response => {
         if (response.status >= 200 && response.status < 300) {
           if(response.data === 'ok') {      
             this.editSaved = true;    
@@ -345,7 +358,7 @@ export default {
       });
     },
     test() {
-      this.$api.post('calc', this.bills[0], response => {
+      this.$api.post('calc', {pricing: this.pricing, bill: this.bills[0]}, response => {
         if (response.status >= 200 && response.status < 300) {
           this.bill = response.data;
         }

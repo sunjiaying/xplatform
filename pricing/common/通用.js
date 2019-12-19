@@ -46,6 +46,24 @@ var 打印 = console.log;
   return sum;
 };
 
+通用.折扣测算 = function (本单) {
+  var 本单吊牌额 = 0;
+  var 本单基折额 = 0;
+  var 本单业务额 = 0;
+  var 本单结算额 = 0;  
+  本单.商品清单.forEach(item => {    
+    本单吊牌额 += item.数量 * item.吊牌价;
+    本单基折额 += item.基折额;
+    本单业务额 += item.业务额;
+    本单结算额 += item.结算额;
+  });
+  本单.折扣测算 = [];
+  本单.折扣测算.push({ "项目": "本单吊牌额", "金额": parseFloat(本单吊牌额.toFixed(2)), "折扣": parseFloat((本单吊牌额 / 本单吊牌额 * 10).toFixed(2)) });
+  本单.折扣测算.push({ "项目": "本单基折额", "金额": parseFloat(本单基折额.toFixed(2)), "折扣": parseFloat((本单基折额 / 本单吊牌额 * 10).toFixed(2)) });
+  本单.折扣测算.push({ "项目": "本单业务额", "金额": parseFloat(本单业务额.toFixed(2)), "折扣": parseFloat((本单业务额 / 本单吊牌额 * 10).toFixed(2)) });
+  本单.折扣测算.push({ "项目": "本单结算额", "金额": parseFloat(本单结算额.toFixed(2)), "折扣": parseFloat((本单结算额 / 本单吊牌额 * 10).toFixed(2)) });
+};
+
 通用.打印计算过程 = function (本单) {
   if (本单.优惠券 && 本单.优惠券.length > 0) {
     打印(`\n顾客优惠券:`);

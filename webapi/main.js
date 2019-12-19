@@ -4,7 +4,9 @@ const path = require('path');
 const execa = require('execa');
 const fs = require('fs');
 
-var 定价 = require('../pricing/设计盒/P00001_xxxx活动.js');
+var 基本定价 = require('../pricing/设计盒/基本定价.js');
+var 活动定价 = require('../pricing/设计盒/P00001_xxxx活动.js');
+const { 通用 } = require('../pricing/common/通用.js');
 
 // let regexs = [
 //   /[(\s=?:,;]require\s*(\s*'([^"'`]+)'\s*\)/,
@@ -35,13 +37,13 @@ app.post('/save', function (req, res) {
       res.send('error_injection');
       return;
     }
-    fs.writeFile(path.join(__dirname, '../pricing/设计盒/P00001_xxxx活动.js'), obj.code, function (err) {
+    fs.writeFile(path.join(__dirname, `../pricing/设计盒/${obj.value}.js`), obj.code, function (err) {
       if (err) {
         console.log(err);
         res.send('error');
       } else {
-        delete require.cache[require.resolve('../pricing/设计盒/P00001_xxxx活动.js')];
-        定价 = require('../pricing/设计盒/P00001_xxxx活动.js');
+        delete require.cache[require.resolve(`../pricing/设计盒/${obj.value}.js`)];
+        活动定价 = require(`../pricing/设计盒/${obj.value}.js`);
         res.send('ok');
       }
     });
@@ -49,7 +51,16 @@ app.post('/save', function (req, res) {
 });
 
 app.get('/promotion', function (req, res) {
-  fs.readFile(path.join(__dirname, '../pricing/设计盒/P00001_xxxx活动.js'), 'utf-8', function (err, data) {
+  fs.readFile(path.join(__dirname, `../pricing/设计盒/${req.query.value}.js`), 'utf-8', function (err, data) {
+    if (err) {
+      res.send(console.error(err));
+    }
+    res.send(data.toString());
+  });
+});
+
+app.get('/base', function (req, res) {
+  fs.readFile(path.join(__dirname, '../pricing/设计盒/基本定价.js'), 'utf-8', function (err, data) {
     if (err) {
       res.send(console.error(err));
     }
@@ -105,17 +116,22 @@ app.get('/template', function (req, res) {
   });  
 });
 
-
 app.post('/calc', function (req, res) {
   req.on('data', function (data) {
-    var bill = JSON.parse(data.toString());
-    try {
-      定价().计算(bill);
-      res.send(bill);
-    } catch(err) {
-      console.log(err);
-      res.send({});
-    }
+    var obj = JSON.parse(data.toString());
+    var bill = obj.bill;
+    var pricing = obj.pricing;
+    pricing.forEach(item => {
+      try {
+        delete require.cache[require.resolve(`../pricing/设计盒/${item}.js`)];
+        定价 = require(`../pricing/设计盒/${item}.js`);
+        定价().计算(bill);
+      } catch(err) {
+        console.log(err);
+      }
+    });    
+    通用.折扣测算(bill);    
+    res.send(bill);
   });
 });
 

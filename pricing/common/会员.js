@@ -14,13 +14,11 @@ var 打印 = console.log;
   if (!本单.VIP顾客)
     return;
 
-  // todo 可以扩展
+  // todo 可以按品牌扩展积分
   var 积分倍率 = 1;
   if (本单.VIP顾客.生日) {
     if (moment(本单.VIP顾客.生日).format('MM') == moment().format('MM')) {
       积分倍率 = 2;
-      打印(`
-该顾客由于在生日月消费,拥有${积分倍率}倍积分`);
     }
   }
   
@@ -32,14 +30,15 @@ var 打印 = console.log;
     整单积分 += item.积分;
   });
   本单.整单积分 = parseFloat(整单积分.toFixed(0));
-  打印(`该顾客本单可积${本单.整单积分}分`);
-  打印(`该顾客本单获取0元赠券`);
+  // 打印(`该顾客本单可积${本单.整单积分}分`);
+  // 打印(`该顾客本单获取0元赠券`);
 };
 
 会员.计算会员价 = function (本单) {  
   本单.商品清单.forEach(item => {
     item.会员价 = item.吊牌价;
     if (本单.VIP顾客) {
+      // todo 扩展
       item.会员价 = item.吊牌价 * 0.9;
     }
     if (item.一口价 != item.吊牌价) {
