@@ -5,10 +5,27 @@ const { 通用 } = require('./通用.js');
 
 var 打印 = console.log;
 
+var 正价会员折扣规则 = [
+  // MA会员折扣
+  {
+    '款号规则': ['A1*', 'A2*'],
+    '折扣': 0.9,
+  },
+  // SU会员折扣
+  {
+    '款号规则': ['B1*', 'B2*'],
+    '折扣': 0.85,
+  }
+]
+
 var 会员 = function() {
   this.计算本单积分可抵额 = function (本单, 可参与本活动的商品清单, 不可以参加本活动的商品清单) {
     return 0;
   };
+
+  this.按商品计算积分 = function(item, 积分倍率, 结算积分汇率) {
+    item.积分 = item.结算额 / 结算积分汇率 * 积分倍率;
+  }
 
   this.积分计算 = function (本单) {
     if (!本单.VIP顾客)
@@ -26,7 +43,7 @@ var 会员 = function() {
     var 结算积分汇率 = 20;
     本单.商品清单.forEach(item => {
       // todo 在此可以增强按商品或者仓位来控制积分
-      item.积分 = item.结算额 / 结算积分汇率 * 积分倍率;
+      按商品计算积分(item, 积分倍率, 结算积分汇率);
       整单积分 += item.积分;
     });
     本单.整单积分 = parseFloat(整单积分.toFixed(0));
@@ -34,20 +51,15 @@ var 会员 = function() {
     // 打印(`该顾客本单获取0元赠券`);
   };
 
-  this.按商品计算会员价 = function(item) {  
+  this.按商品计算会员价 = function(item) {
     item.会员价 = item.吊牌价;
 
-    // MA品牌会员价格设置
-    if (通用.匹配(item.款号, ['A1*', 'A2*'])) {
-      item.会员价 = item.吊牌价 * 0.9;
-      if (通用.匹配(item.款号, ['A1KT1805M*'])) {
-        item.会员价 = item.吊牌价 * 0.85;
+    for (let index = 0; index < 正价会员折扣规则.length; index++) {
+      const 规则 = 正价会员折扣规则[index];
+      if (通用.匹配(item.款号, 规则.款号规则)) {
+        item.会员价 = item.吊牌价 * 规则.折扣;
+        break;
       }
-    }
-
-    // SU品牌会员价格设置
-    if (通用.匹配(item.款号, ['B1*', 'B2*'])) {
-      item.会员价 = item.吊牌价 * 0.85;
     }
   }
 
