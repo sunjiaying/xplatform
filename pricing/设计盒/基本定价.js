@@ -7,6 +7,7 @@ const 打印 = console.log;
 
 var 定价 = function() {
   this.计算 = function (本单) {
+    工具.重新加载();
     // 计算逻辑从这里开始
     工具.计算会员价(本单);
     工具.分摊优惠券额(本单);
