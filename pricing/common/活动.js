@@ -20,7 +20,7 @@ var 活动 = function() {
         }
       }
     });
-    console.log('基折价最低商品款号', 基折价最低商品款号);
+    // console.log('基折价最低商品款号', 基折价最低商品款号);
     本单.商品清单.forEach(item => {
       if (
         通用.匹配(item.款号, 可参与本活动的商品清单) && 
@@ -40,6 +40,7 @@ var 活动 = function() {
         item.业务额 = item.业务额 < 0 ? 0 : item.业务额;
         item.结算额 = item.业务额 - item.积分额 - item.优惠券2;
         item.结算额 = item.结算额 < 0 ? 0 : item.结算额;
+        console.log('item.结算额', item.结算额);
       }
     });
   };

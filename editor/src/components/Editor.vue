@@ -6,7 +6,6 @@
         <Radio label="P00003_xxxx活动"></Radio>
       </RadioGroup>
       <Button type="success" size="small" @click="save">保存并激活</Button>
-      <Button type="primary" size="small" @click="test">测试</Button>
 
       <Select v-model="templateSelected" size="small" style="width:200px">
         <Option-group label="热门活动">
